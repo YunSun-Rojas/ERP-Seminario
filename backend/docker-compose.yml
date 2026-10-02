@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:16
+    environment: {POSTGRES_DB: erp_db, POSTGRES_USER: erp, POSTGRES_PASSWORD: erp_clave}
+    volumes: [pgdata:/var/lib/postgresql/data]
+  api:
+    build: .
+    environment:
+      DATABASE_URL: postgresql+psycopg2://erp:erp_clave@db:5432/erp_db
+      SECRET_KEY: ${SECRET_KEY:?defina SECRET_KEY}
+      S3_BUCKET: ${S3_BUCKET:-}
+    depends_on: [db]
+    ports: ["8000:8000"]
+volumes: {pgdata: {}}
